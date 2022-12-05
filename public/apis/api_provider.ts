@@ -8,6 +8,7 @@ import { Task } from './task';
 import { Train } from './train';
 import { ModelAlgorithm } from './model_algorithm';
 import { Predict } from './predict';
+import { ModelGroup } from './model_group';
 
 const apiInstanceStore: {
   model: Model | undefined;
@@ -15,12 +16,14 @@ const apiInstanceStore: {
   train: Train | undefined;
   modelAlgorithm: ModelAlgorithm | undefined;
   predict: Predict | undefined;
+  modelGroup: ModelGroup | undefined;
 } = {
   model: undefined,
   task: undefined,
   train: undefined,
   modelAlgorithm: undefined,
   predict: undefined,
+  modelGroup: undefined,
 };
 
 export class APIProvider {
@@ -29,6 +32,7 @@ export class APIProvider {
   public static getAPI(type: 'train'): Train;
   public static getAPI(type: 'modelAlgorithm'): ModelAlgorithm;
   public static getAPI(type: 'predict'): Predict;
+  public static getAPI(type: 'modelGroup'): ModelGroup;
   public static getAPI(type: keyof typeof apiInstanceStore) {
     if (apiInstanceStore[type]) {
       return apiInstanceStore[type]!;
@@ -57,6 +61,11 @@ export class APIProvider {
       case 'predict': {
         const newInstance = new Predict();
         apiInstanceStore.predict = newInstance;
+        return newInstance;
+      }
+      case 'modelGroup': {
+        const newInstance = new ModelGroup();
+        apiInstanceStore.modelGroup = newInstance;
         return newInstance;
       }
     }

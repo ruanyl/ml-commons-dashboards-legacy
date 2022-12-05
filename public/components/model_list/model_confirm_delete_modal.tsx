@@ -11,14 +11,14 @@ import { usePollingUntil } from '../../hooks/use_polling_until';
 export class NoIdProvideError {}
 
 export interface ModelConfirmDeleteModalInstance {
-  show: (modelId: string) => void;
+  show: (modelId: string | string[]) => void;
 }
 
 export const ModelConfirmDeleteModal = React.forwardRef<
   ModelConfirmDeleteModalInstance,
   { onDeleted: () => void }
 >(({ onDeleted }, ref) => {
-  const deleteIdRef = useRef<string>();
+  const deleteIdRef = useRef<string | string[]>();
   const [visible, setVisible] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { start: startPolling } = usePollingUntil({
@@ -26,14 +26,17 @@ export const ModelConfirmDeleteModal = React.forwardRef<
       if (!deleteIdRef.current) {
         throw new NoIdProvideError();
       }
+      const ids =
+        typeof deleteIdRef.current === 'string' ? [deleteIdRef.current] : deleteIdRef.current;
+      const deleteCounts = ids.length;
       return (
         (
           await APIProvider.getAPI('model').search({
-            ids: [deleteIdRef.current],
-            pageSize: 1,
+            ids,
+            pageSize: deleteCounts,
             currentPage: 1,
           })
-        ).pagination.totalRecords === 1
+        ).pagination.totalRecords === deleteCounts
       );
     },
     onGiveUp: () => {
@@ -54,7 +57,11 @@ export const ModelConfirmDeleteModal = React.forwardRef<
       }
       e.stopPropagation();
       setIsDeleting(true);
-      await APIProvider.getAPI('model').delete(deleteIdRef.current);
+      const ids =
+        typeof deleteIdRef.current === 'string' ? [deleteIdRef.current] : deleteIdRef.current;
+      for (let i = 0; i < ids.length; i++) {
+        await APIProvider.getAPI('model').delete(ids[i]);
+      }
       startPolling();
     },
     [startPolling]
@@ -68,7 +75,7 @@ export const ModelConfirmDeleteModal = React.forwardRef<
   useImperativeHandle(
     ref,
     () => ({
-      show: (id: string) => {
+      show: (id: string | string[]) => {
         deleteIdRef.current = id;
         setVisible(true);
       },

@@ -15,3 +15,4 @@ export const MODEL_ALGORITHM_API_ENDPOINT = `${API_PREFIX}/model-algorithm`;
 export const TASK_FUNCTION_API_ENDPOINT = `${API_PREFIX}/task-function`;
 export const TASK_STATE_API_ENDPOINT = `${API_PREFIX}/task-state`;
 export const PREDICT_API_ENDPOINT = `${API_PREFIX}/predict`;
+export const MODEL_GROUP_API_ENDPOINT = `${API_PREFIX}/model-group`;

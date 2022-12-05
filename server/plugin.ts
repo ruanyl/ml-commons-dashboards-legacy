@@ -27,6 +27,7 @@ import { ModelService, TrainService } from './services';
 import { TaskService } from './services/task_service';
 import { ModelAlgorithmService } from './services/model_algorithm_service';
 import { PredictService } from './services/predict_service';
+import { modelGroupRouter } from './routes/model_group_router';
 
 export class MlCommonsPlugin implements Plugin<MlCommonsPluginSetup, MlCommonsPluginStart> {
   private readonly logger: Logger;
@@ -63,6 +64,7 @@ export class MlCommonsPlugin implements Plugin<MlCommonsPluginSetup, MlCommonsPl
     trainRouter(services, router);
     modelAlgorithmRouter(services, router);
     predictRouter(services, router);
+    modelGroupRouter(router);
 
     return {};
   }
